@@ -1,6 +1,8 @@
+
 const MILLISECONDS_PER_FRAME = 10
 const PLAYER_RADIUS =  visualViewport.width / 20
 const BALL_RADIUS = PLAYER_RADIUS / 2
+const BALL_COLOR = "white"
 const GOAL_WIDTH = PLAYER_RADIUS * 7
 const PIXEL_SHIM = BALL_RADIUS + PLAYER_RADIUS
 const FRAMES_PER_SENT_PLAYER = 3
@@ -25,12 +27,13 @@ const DIRECTIONS = {
 const GOALS = {
   red: {
     xPos: (visualViewport.width - (PLAYER_RADIUS * 7)) / 2,
-    yPos: PIXEL_SHIM
+    yPos: PIXEL_SHIM,
   },
   blue: {
     xPos: (visualViewport.width - (PLAYER_RADIUS * 7)) / 2,
     yPos: visualViewport.height - PIXEL_SHIM
-  }
+  },
+  color: "white"
 }
 const WALLS = {
   left: "left",
@@ -140,7 +143,6 @@ function initializeGame() {
   document.addEventListener('wheel', function(e){ e.preventDefault() }, { passive: false })
   gameLoop()
 }
-
 
 function handleTouchstart(event) {
   touch1.xPos = event.touches[0].clientX
@@ -542,19 +544,19 @@ function drawPlayers() {
 }
 
 function drawBall() {
-  context.beginPath()
+    context.beginPath()
   context.arc(ball.xPos, ball.yPos, BALL_RADIUS, 0, 2 * Math.PI)
-  context.fillStyle = "black"
+  context.fillStyle = BALL_COLOR
   context.fill()
 }
 
 function drawGoals() {
   context.beginPath()
   context.rect(GOALS.red.xPos, GOALS.red.yPos, GOAL_WIDTH, visualViewport.height / 100)
-  context.fillStyle = "black"
+  context.fillStyle = GOALS.color
   context.fill()
   context.beginPath()
   context.rect(GOALS.blue.xPos, GOALS.blue.yPos, GOAL_WIDTH, visualViewport.height / 100)
-  context.fillStyle = "black"
+  context.fillStyle = GOALS.color
   context.fill()
 }
