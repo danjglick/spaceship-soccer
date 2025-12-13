@@ -8,8 +8,8 @@ const GOAL_COLOR = "white"
 const GOAL_HEIGHT = visualViewport.height / 100
 const PIXEL_SHIM = BALL_RADIUS + PLAYER_RADIUS
 const FRAMES_PER_SENT_PLAYER = 3
-const SLOW_SPEED = .001
-const FAST_SPEED = .005
+const SLOW_SPEED = .01
+const FAST_SPEED = .05
 const FARNESS_THRESHOLD = PLAYER_RADIUS * 5
 const FRAMES_BETWEEN_PLAYER_PATH_RESETS = 100
 const TACKLE_BLOWBACK_DISTANCE = PLAYER_RADIUS
@@ -82,7 +82,6 @@ const TRIES_PER_PATH_CHECK = 100
 let canvas;
 let context;
 let players = JSON.parse(JSON.stringify(PLAYERS_STARTING_POSITIONS))
-let protagonist = players.blue[0]
 let ball = {
   radius: BALL_RADIUS,
   xPos: visualViewport.width / 2,
