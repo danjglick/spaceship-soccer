@@ -1,39 +1,32 @@
 
 const MILLISECONDS_PER_FRAME = 10
 const PLAYER_RADIUS =  visualViewport.width / 20
-const BALL_RADIUS = PLAYER_RADIUS / 2
+const BALL_RADIUS = visualViewport.width / 40
 const BALL_COLOR = "white"
-const GOAL_WIDTH = PLAYER_RADIUS * 7
+const GOAL_WIDTH = visualViewport.width / 10
+const GOAL_COLOR = "white"
+const GOAL_HEIGHT = visualViewport.height / 100
 const PIXEL_SHIM = BALL_RADIUS + PLAYER_RADIUS
 const FRAMES_PER_SENT_PLAYER = 3
-const SLOW_SPEED = 0.01
-const FAST_SPEED = 0.05
+const SLOW_SPEED = .001
+const FAST_SPEED = .005
 const FARNESS_THRESHOLD = PLAYER_RADIUS * 5
 const FRAMES_BETWEEN_PLAYER_PATH_RESETS = 100
 const TACKLE_BLOWBACK_DISTANCE = PLAYER_RADIUS
 const RED_TEAM_SHOT_TARGETS = [(visualViewport.width / 2) + (GOAL_WIDTH / 3), (visualViewport.width / 2) - (GOAL_WIDTH / 3)]
-const BLUE_GOALIE_SPOT = {
-  xPos: visualViewport.width / 2,
-  yPos: visualViewport.height - PIXEL_SHIM * 2
-}
-const RED_GOALIE_SPOT = {
-  xPos: visualViewport.width / 2,
-  yPos: PIXEL_SHIM * 2
-}
 const DIRECTIONS = {
   forward: "forward",
   backward: "backward"
 }
 const GOALS = {
   red: {
-    xPos: (visualViewport.width - (PLAYER_RADIUS * 7)) / 2,
-    yPos: PIXEL_SHIM,
+    xPos: (visualViewport.width / 2 - GOAL_WIDTH / 2),
+    yPos: 0
   },
   blue: {
-    xPos: (visualViewport.width - (PLAYER_RADIUS * 7)) / 2,
-    yPos: visualViewport.height - PIXEL_SHIM
-  },
-  color: "white"
+    xPos: (visualViewport.width / 2  - GOAL_WIDTH / 2),
+    yPos: visualViewport.height - GOAL_HEIGHT
+  }
 }
 const WALLS = {
   left: "left",
@@ -60,12 +53,6 @@ const PLAYERS_STARTING_POSITIONS = {
       yPos: visualViewport.height * 0.75,
       xPosChangePerFrame: 0,
       yPosChangePerFrame: 0
-    },
-    {
-      xPos: BLUE_GOALIE_SPOT.xPos,
-      yPos: BLUE_GOALIE_SPOT.yPos,
-      xPosChangePerFrame: 0,
-      yPosChangePerFrame: 0
     }
   ],
   red: [
@@ -86,13 +73,7 @@ const PLAYERS_STARTING_POSITIONS = {
       yPos: visualViewport.height / 4,
       xPosChangePerFrame: 0,
       yPosChangePerFrame: 0
-    },
-    {
-      xPos: RED_GOALIE_SPOT.xPos,
-      yPos: RED_GOALIE_SPOT.yPos,
-      xPosChangePerFrame: 0,
-      yPosChangePerFrame: 0
-    },
+    }
   ]
 }
 const FRAMES_PER_REPOSSESSION_FREEZE = 30
@@ -101,6 +82,7 @@ const TRIES_PER_PATH_CHECK = 100
 let canvas;
 let context;
 let players = JSON.parse(JSON.stringify(PLAYERS_STARTING_POSITIONS))
+let protagonist = players.blue[0]
 let ball = {
   radius: BALL_RADIUS,
   xPos: visualViewport.width / 2,
@@ -215,8 +197,6 @@ function setPlayerPaths() {
   for (let i = 0; i < bestDefensiveSpots.length; i++) {
       if (defensiveTeam[i] !== sentPlayer) setObjectTowardsSpotAtSpeed(defensiveTeam[i], bestDefensiveSpots[i], SLOW_SPEED)
   }
-  setObjectTowardsSpotAtSpeed(players.blue[players.blue.length - 1], BLUE_GOALIE_SPOT, SLOW_SPEED)
-  setObjectTowardsSpotAtSpeed(players.red[players.red.length - 1], RED_GOALIE_SPOT, SLOW_SPEED)
 }
 
 function getBestOffensiveSpots() {
@@ -552,11 +532,11 @@ function drawBall() {
 
 function drawGoals() {
   context.beginPath()
-  context.rect(GOALS.red.xPos, GOALS.red.yPos, GOAL_WIDTH, visualViewport.height / 100)
-  context.fillStyle = GOALS.color
+  context.rect(GOALS.red.xPos, GOALS.red.yPos, GOAL_WIDTH, GOAL_HEIGHT)
+  context.fillStyle = GOAL_COLOR
   context.fill()
   context.beginPath()
-  context.rect(GOALS.blue.xPos, GOALS.blue.yPos, GOAL_WIDTH, visualViewport.height / 100)
-  context.fillStyle = GOALS.color
+  context.rect(GOALS.blue.xPos, GOALS.blue.yPos, GOAL_WIDTH, GOAL_HEIGHT)
+  context.fillStyle = GOAL_COLOR
   context.fill()
 }
