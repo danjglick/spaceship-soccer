@@ -12,6 +12,8 @@ const FAST_SPEED = .05
 const FARNESS_THRESHOLD = PLAYER_RADIUS * 5
 const FRAMES_BETWEEN_PLAYER_PATH_RESETS = 100
 const TACKLE_BLOWBACK_DISTANCE = PLAYER_RADIUS
+const FRAMES_PER_REPOSSESSION_FREEZE = 30
+const TRIES_PER_PATH_CHECK = 100
 const RED_TEAM_SHOT_TARGETS = [(visualViewport.width / 2) + (GOAL_WIDTH / 3), (visualViewport.width / 2) - (GOAL_WIDTH / 3)]
 const DIRECTIONS = {
   forward: "forward",
@@ -87,27 +89,10 @@ const PLAYERS_STARTING_POSITIONS = {
     }
   ]
 }
-const FRAMES_PER_REPOSSESSION_FREEZE = 30
-const TRIES_PER_PATH_CHECK = 100
 
 let canvas;
 let context;
 let players = JSON.parse(JSON.stringify(PLAYERS_STARTING_POSITIONS))
-let ball = {
-  radius: BALL_RADIUS,
-  xPos: visualViewport.width / 2,
-  yPos: visualViewport.height / 2,
-  xPosChangePerFrame: 0,
-  yPosChangePerFrame: 0
-}
-let touch1 = {
-  xPos: 0,
-  yPos: 0
-}
-let touch2 = {
-  xPos: 0,
-  yPos: 0
-}
 let offensiveTeam = players.blue
 let defensiveTeam = players.red
 let ballPossessor = players.blue[0]
@@ -123,6 +108,21 @@ let sentPlayerFramesLeft = 0
 let score = {
   blue: 0,
   red: 0
+}
+let ball = {
+  radius: BALL_RADIUS,
+  xPos: visualViewport.width / 2,
+  yPos: visualViewport.height / 2,
+  xPosChangePerFrame: 0,
+  yPosChangePerFrame: 0
+}
+let touch1 = {
+  xPos: 0,
+  yPos: 0
+}
+let touch2 = {
+  xPos: 0,
+  yPos: 0
 }
 
 // inputs
@@ -197,6 +197,17 @@ function handleTouchmove(event) {
 
 // spacehips
 
+function setPlayerPaths() {
+  let bestOffensiveSpots = getBestOffensiveSpots()
+  for (let i = 0; i < bestOffensiveSpots.length; i++) {
+    if (offensiveTeam[i] !== sentPlayer && offensiveTeam[i] !== dribblingPlayer) setObjectTowardsSpotAtSpeed(offensiveTeam[i], bestOffensiveSpots[i], SLOW_SPEED)
+  }
+  let bestDefensiveSpots = getBestDefensiveSpots()
+  for (let i = 0; i < bestDefensiveSpots.length; i++) {
+    if (defensiveTeam[i] !== sentPlayer) setObjectTowardsSpotAtSpeed(defensiveTeam[i], bestDefensiveSpots[i], SLOW_SPEED)
+  }
+}
+
 function getBestOffensiveSpots() {
   let bestOffensiveSpots = []
   for (let xPos = PIXEL_SHIM; xPos < visualViewport.width; xPos++) {
@@ -204,12 +215,13 @@ function getBestOffensiveSpots() {
       let spot = {
         xPos: xPos,
         yPos: yPos,
-        distance_from_goal: (offensiveTeam === players.blue ? yPos : canvas.height - yPos)
+        forwardness: offensiveTeam === players.blue ? yPos : canvas.height - yPos,
+        centralness: Math.abs(xPos - visualViewport.width / 2)
       }
       if (isObjectFarFromObjects(spot, FARNESS_THRESHOLD, defensiveTeam.concat(bestOffensiveSpots))) {
         for (let i = 0; i < offensiveTeam.length - 1; i++) {
           if (
-            !bestOffensiveSpots[i] || spot.distanceFromGoal < bestOffensiveSpots[i].distanceFromGoal 
+            !bestOffensiveSpots[i] || spot.forwardness < bestOffensiveSpots[i].forwardness 
             && isPathClear(offensiveTeam[i], spot)
           ) {
             bestOffensiveSpots[i] = spot
@@ -247,17 +259,6 @@ function setOffensiveAndDefensiveTeams() {
       defensiveTeam = players.blue
       return
     }
-  }
-}
-
-function setPlayerPaths() {
-  let bestOffensiveSpots = getBestOffensiveSpots()
-  for (let i = 0; i < bestOffensiveSpots.length; i++) {
-    if (offensiveTeam[i] !== sentPlayer && offensiveTeam[i] !== dribblingPlayer) setObjectTowardsSpotAtSpeed(offensiveTeam[i], bestOffensiveSpots[i], SLOW_SPEED)
-  }
-  let bestDefensiveSpots = getBestDefensiveSpots()
-  for (let i = 0; i < bestDefensiveSpots.length; i++) {
-      if (defensiveTeam[i] !== sentPlayer) setObjectTowardsSpotAtSpeed(defensiveTeam[i], bestDefensiveSpots[i], SLOW_SPEED)
   }
 }
 
