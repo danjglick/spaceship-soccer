@@ -125,7 +125,7 @@ let score = {
   red: 0
 }
 
-// input
+// inputs
 
 function startGame() {
   canvas = document.getElementById("canvas")
@@ -195,7 +195,7 @@ function handleTouchmove(event) {
   }
 }
 
-// think
+// spacehips
 
 function getBestOffensiveSpots() {
   let bestOffensiveSpots = []
@@ -232,8 +232,6 @@ function getBestDefensiveSpots() {
   }
   return bestDefensiveSpots
 }
-
-// move
 
 function setOffensiveAndDefensiveTeams() {
   for (let i = 0; i < players.blue.length; i++) {
@@ -309,6 +307,8 @@ function movePlayers() {
   }
 }
 
+// ball
+
 function getKickTargetByDirection(direction) {
   if (direction === DIRECTIONS.forward) {
     let shotTarget = {
@@ -361,6 +361,8 @@ function moveBall() {
   ball.xPos += ball.xPosChangePerFrame
   ball.yPos += ball.yPosChangePerFrame
 }
+
+// collisions
 
 function getCollisions() {
   let collisions = {
@@ -493,7 +495,7 @@ function drawPlayers() {
 }
 
 function drawBall() {
-    context.beginPath()
+  context.beginPath()
   context.arc(ball.xPos, ball.yPos, BALL_RADIUS, 0, 2 * Math.PI)
   context.fillStyle = BALL_COLOR
   context.fill()
@@ -509,6 +511,7 @@ function drawGoals() {
   context.fillStyle = GOAL_COLOR
   context.fill()
 }
+
 
 // utilities
 
