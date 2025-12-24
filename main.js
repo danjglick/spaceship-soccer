@@ -1,4 +1,3 @@
-
 const MILLISECONDS_PER_FRAME = 10
 const PLAYER_RADIUS =  visualViewport.width / 20
 const BALL_RADIUS = visualViewport.width / 40
@@ -53,6 +52,12 @@ const PLAYERS_STARTING_POSITIONS = {
       yPos: visualViewport.height * 0.75,
       xPosChangePerFrame: 0,
       yPosChangePerFrame: 0
+    },
+    {
+      xPos: visualViewport.width / 2,
+      yPos: visualViewport.height - PIXEL_SHIM,
+      xPosChangePerFrame: 0,
+      yPosChangePerFrame: 0
     }
   ],
   red: [
@@ -71,6 +76,12 @@ const PLAYERS_STARTING_POSITIONS = {
     {
       xPos: visualViewport.width * 0.8,
       yPos: visualViewport.height / 4,
+      xPosChangePerFrame: 0,
+      yPosChangePerFrame: 0
+    },
+    {
+      xPos: visualViewport.width / 2,
+      yPos: PIXEL_SHIM,
       xPosChangePerFrame: 0,
       yPosChangePerFrame: 0
     }
