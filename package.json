@@ -1,0 +1,9 @@
+{
+  "name": "spaceship-soccer",
+  "version": "1.0.0",
+  "description": "Spaceship Soccer game",
+  "scripts": {
+    "serve": "node serve.js"
+  }
+}
+
